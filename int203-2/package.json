@@ -1,5 +1,5 @@
 {
-  "name": "text-editor",
+  "name": "int203-2",
   "private": true,
   "version": "0.0.0",
   "scripts": {
@@ -12,6 +12,6 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.3.1",
-    "vite": "^2.9.5"
+    "vite": "^2.9.7"
   }
 }
