@@ -23,9 +23,63 @@ const search = (searchTrack) => {
     textDisplay.value = 'haveShipment'
       if (filterShipments.value.length == 0) textDisplay.value = 'wrongTrack'
   }
-  console.log(filterShipments.value)
-  console.log(textDisplay.value)
+  // console.log(filterShipments.value)
+  // console.log(textDisplay.value)
 }
+
+const showAllTrack = ref()
+const toShowAllTrack = () => {
+  if(showAllTrack.value == true) showAllTrack.value = false
+  else showAllTrack.value = true
+}
+
+const showForm = ref()
+const toShowForm = () => {
+  if(showForm.value == true) showForm.value = false
+  else showForm.value = true
+}
+
+const newShipment = ref({})
+const newTrack = ref()
+const newSender = ref()
+const newReceiver = ref()
+const newStatus = ref('Picked up')
+// add func
+const addNewShipment = () => {
+  newShipment.value = {trackingNum:newTrack.value,sender:newSender.value,receiver:newReceiver.value,status:newStatus.value,id:shipments.value.length+1}
+  shipments.value.push(newShipment.value)
+  showForm.value = false
+  newTrack.value = '',newSender.value = '',newReceiver.value = '',newStatus.value = 'Picked up'
+}
+
+// delete func
+const deleteShipment = (index) => { shipments.value.splice(index, 1) }
+
+// edit func
+const shipmentId = ref()
+const showEditShipment = ref(false)
+const toShowEditShipment = (index) => {
+  showEditShipment.value = true
+  shipmentId.value = index+1
+  console.log(shipmentId.value)
+  trackNum.value = shipments.value[index].trackingNum
+  console.log (trackNum.value)
+}
+const senderUpdate = ref() 
+const receiverUpdate = ref() 
+const statusUpdate = ref()
+const trackNum = ref()
+const editShipment = () =>{
+
+  shipments.value = shipments.value.map(item =>
+  item.id === shipmentId.value
+    ? { ...item, sender:senderUpdate.value ,receiver: receiverUpdate.value, status:statusUpdate.value}
+    : item
+  );
+
+  senderUpdate.value = '', receiverUpdate = '',statusUpdate ='Picked up'
+}
+
 
 </script>
 
@@ -35,6 +89,30 @@ const search = (searchTrack) => {
   <p>กรอกหมายเลขพัสดุเพื่อค้นหาข้อมูล</p>
   <input type='text' placeholder='ex.9999999TH' v-model="searchTrack">
   <button @click="search(searchTrack)">search</button>
+
+  <!-- list all -->
+  <button @click="toShowAllTrack">all tracking</button>
+  <div v-show="showAllTrack"> <br>
+    <table  align="center">
+    <tr>
+      <th> Tracking No.</th>
+      <th> Sender</th>
+      <th> Receiver</th>
+      <th> Status</th>
+    </tr>
+    <tr v-for="(shipment,index) in shipments" :key="index" >
+      <td> {{ shipment.trackingNum }} </td>
+      <td> {{ shipment.sender }}</td>
+      <td> {{ shipment.receiver }}</td>
+      <td> {{ shipment.status }}</td>
+     <!-- delete track --> 
+     <td> <button @click="deleteShipment(index)">delete</button></td>
+     <!-- edit track --> 
+     <td> <button @click="toShowEditShipment(index)">edit</button></td>
+    </tr>
+  </table>
+
+  </div>
   <br>
   <br>
   <table v-show="filterShipments.length > 0" align="center">
@@ -55,6 +133,36 @@ const search = (searchTrack) => {
   <p :style="warningStyle" v-if="textDisplay=='noSearch'"> ----- กรุณาใส่หมายเลขพัสดุ -----</p>
   <p :style="warningStyle" v-else-if="textDisplay=='wrongTrack'"> ----- ไม่พบข้อมูลการค้นหา -----</p>
   </div>
+
+  <!-- add track -->
+  <button @click="toShowForm">  เพิ่มหมายเลขพัสดุ </button>
+  <div v-show="showForm">
+  <p> Tracking No. : <input type="text" v-model="newTrack"></p>
+  <p> Sender : <input type="text" v-model="newSender"></p>
+  <p> Receiver : <input type="text" v-model="newReceiver"></p>
+  <p> Status : <select v-model="newStatus">
+    <option value="Picked up"> Picked up </option>
+    <option value="In transit"> In transit </option>
+    <option value="Delivered"> Delivered </option>
+  </select></p>
+  
+  <button @click="addNewShipment"> submit </button>
+  </div>
+
+<!-- edit form -->
+<div v-show="showEditShipment">
+  <p> Tracking No. : {{trackNum}} </p>
+  <p> Sender : <input type="text" v-model="senderUpdate"></p>
+  <p> Receiver : <input type="text" v-model="receiverUpdate"></p>
+  <p> Status : <select v-model="statusUpdate">
+    <option value="Picked up"> Picked up </option>
+    <option value="In transit"> In transit </option>
+    <option value="Delivered"> Delivered </option>
+  </select></p>
+  
+  <button @click="editShipment"> submit </button>
+  </div>
+
   </div>
 </template>
 
