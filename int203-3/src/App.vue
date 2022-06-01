@@ -15,7 +15,7 @@ const warningStyle = {
   color: 'darkred',
   fontSize: '18px'
 }
-
+  // search track
 const search = (searchTrack) => { 
   if (!searchTrack) filterShipments.value = [] , textDisplay.value = 'noSearch'
   else {
@@ -23,16 +23,16 @@ const search = (searchTrack) => {
     textDisplay.value = 'haveShipment'
       if (filterShipments.value.length == 0) textDisplay.value = 'wrongTrack'
   }
-  // console.log(filterShipments.value)
-  // console.log(textDisplay.value)
 }
 
+ // show all
 const showAllTrack = ref()
 const toShowAllTrack = () => {
   if(showAllTrack.value == true) showAllTrack.value = false
   else showAllTrack.value = true
 }
 
+  // add func
 const showForm = ref()
 const toShowForm = () => {
   if(showForm.value == true) showForm.value = false
@@ -44,9 +44,10 @@ const newTrack = ref()
 const newSender = ref()
 const newReceiver = ref()
 const newStatus = ref('Picked up')
-// add func
+
 const addNewShipment = () => {
-  newShipment.value = {trackingNum:newTrack.value,sender:newSender.value,receiver:newReceiver.value,status:newStatus.value,id:shipments.value.length+1}
+  newShipment.value = {trackingNum:newTrack.value,sender:newSender.value,
+  receiver:newReceiver.value,status:newStatus.value,id:shipments.value.length+1}
   shipments.value.push(newShipment.value)
   showForm.value = false
   newTrack.value = '',newSender.value = '',newReceiver.value = '',newStatus.value = 'Picked up'
@@ -57,27 +58,30 @@ const deleteShipment = (index) => { shipments.value.splice(index, 1) }
 
 // edit func
 const shipmentId = ref()
-const showEditShipment = ref(false)
+const showEditShipment = ref()
 const toShowEditShipment = (index) => {
-  showEditShipment.value = true
+  if(showEditShipment.value == true) showEditShipment.value = false
+  else showEditShipment.value = true
+
   shipmentId.value = index+1
   console.log(shipmentId.value)
+
   trackNum.value = shipments.value[index].trackingNum
   console.log (trackNum.value)
+  
 }
+
 const senderUpdate = ref() 
 const receiverUpdate = ref() 
 const statusUpdate = ref()
 const trackNum = ref()
 const editShipment = () =>{
-
-  shipments.value = shipments.value.map(item =>
-  item.id === shipmentId.value
-    ? { ...item, sender:senderUpdate.value ,receiver: receiverUpdate.value, status:statusUpdate.value}
-    : item
+  shipments.value = shipments.value.map(shipment =>
+  shipment.id === shipmentId.value
+    ? { ...shipment, sender:senderUpdate.value ,receiver: receiverUpdate.value, status: statusUpdate.value}
+    : shipment
   );
-
-  senderUpdate.value = '', receiverUpdate = '',statusUpdate ='Picked up'
+  senderUpdate.value = '', receiverUpdate.value = '', statusUpdate.value = 'Picked up'
 }
 
 
@@ -105,13 +109,15 @@ const editShipment = () =>{
       <td> {{ shipment.sender }}</td>
       <td> {{ shipment.receiver }}</td>
       <td> {{ shipment.status }}</td>
-     <!-- delete track --> 
+  
+     <!-- delete button --> 
      <td> <button @click="deleteShipment(index)">delete</button></td>
-     <!-- edit track --> 
+     <!-- edit button --> 
      <td> <button @click="toShowEditShipment(index)">edit</button></td>
     </tr>
   </table>
 
+      <!-- list search -->
   </div>
   <br>
   <br>
@@ -129,12 +135,13 @@ const editShipment = () =>{
       <td> {{ shipment.status }}</td>
     </tr>
   </table>
+      <!-- warning -->
   <div>
   <p :style="warningStyle" v-if="textDisplay=='noSearch'"> ----- กรุณาใส่หมายเลขพัสดุ -----</p>
   <p :style="warningStyle" v-else-if="textDisplay=='wrongTrack'"> ----- ไม่พบข้อมูลการค้นหา -----</p>
   </div>
 
-  <!-- add track -->
+      <!-- add form -->
   <button @click="toShowForm">  เพิ่มหมายเลขพัสดุ </button>
   <div v-show="showForm">
   <p> Tracking No. : <input type="text" v-model="newTrack"></p>
@@ -149,7 +156,7 @@ const editShipment = () =>{
   <button @click="addNewShipment"> submit </button>
   </div>
 
-<!-- edit form -->
+      <!-- edit form -->
 <div v-show="showEditShipment">
   <p> Tracking No. : {{trackNum}} </p>
   <p> Sender : <input type="text" v-model="senderUpdate"></p>
@@ -195,6 +202,6 @@ td {
 }
 button{
   background-color: #F8E9A1;
-  
 }
+
 </style>

@@ -1,13 +1,18 @@
 <script setup>
 import { ref } from "vue";
-const openPopup = () => {
-  alert('confirm')
+
+const item = ref()
+const submit = () => {
+  alert('edit success');
 }
 </script>
 
 <template>
-<h2>press to confirm</h2>
-  <button @click="openPopup">click here</button>
+<h2>Click submit to confirm</h2>
+<form v-on:submit="submit">
+  <input>
+  <button>submit</button>
+  </form>
 </template>
 
 <style></style>
